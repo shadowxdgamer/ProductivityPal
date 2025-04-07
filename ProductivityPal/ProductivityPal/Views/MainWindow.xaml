@@ -1,0 +1,180 @@
+﻿<Window x:Class="ProductivityPal.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ProductivityPal.Views"
+        xmlns:viewmodels="clr-namespace:ProductivityPal.ViewModels"
+        xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+        xmlns:models="clr-namespace:ProductivityPal.Models"
+        xmlns:converters="clr-namespace:ProductivityPal.Converters"
+        mc:Ignorable="d"
+        Title="ProductivityPal - Smart Todo List" Height="700" Width="1200"
+        WindowStartupLocation="CenterScreen">
+    
+    <Window.DataContext>
+        <viewmodels:MainViewModel/>
+    </Window.DataContext>
+    
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:PriorityToColorConverter x:Key="PriorityToColorConverter"/>
+        
+        <!-- Task Card Template -->
+        <DataTemplate DataType="{x:Type models:TaskCard}">
+            <Grid>
+                <Border BorderBrush="#333" BorderThickness="1" CornerRadius="3" Margin="5" Background="White">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        
+                        <!-- Card Header with Priority and Group -->
+                        <Grid Grid.Row="0" Margin="5,5,5,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <!-- Priority Label -->
+                            <Border Grid.Column="0" Height="8" Width="40" VerticalAlignment="Center"
+                                    Background="{Binding Priority, Converter={StaticResource PriorityToColorConverter}}"/>
+                            
+                            <!-- Group Label (if exists) -->
+                            <TextBlock Grid.Column="1" Text="{Binding Group}" 
+                                      Margin="10,0,0,0" 
+                                      FontSize="10" 
+                                      Foreground="#666"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Center"
+                                      Visibility="{Binding Group, Converter={StaticResource StringNotEmptyToVisibilityConverter}}"/>
+                        </Grid>
+                        
+                        <!-- Task Content -->
+                        <TextBlock Grid.Row="1" Text="{Binding Title}" Margin="10" TextWrapping="Wrap" Foreground="#333"/>
+                    </Grid>
+                </Border>
+                
+                <!-- Context Menu -->
+                <Grid.ContextMenu>
+                    <ContextMenu>
+                        <MenuItem Header="Edit Task" 
+                                 Command="{Binding DataContext.EditCardCommand, RelativeSource={RelativeSource AncestorType=Window}}" 
+                                 CommandParameter="{Binding}"/>
+                        <Separator/>
+                        <MenuItem Header="Priority">
+                            <MenuItem Header="Low" 
+                                     Command="{Binding DataContext.SetPriorityLowCommand, 
+                                     RelativeSource={RelativeSource AncestorType=Window}}" 
+                                     CommandParameter="{Binding}"/>
+                            <MenuItem Header="Medium" 
+                                     Command="{Binding DataContext.SetPriorityMediumCommand, 
+                                     RelativeSource={RelativeSource AncestorType=Window}}" 
+                                     CommandParameter="{Binding}"/>
+                            <MenuItem Header="High" 
+                                     Command="{Binding DataContext.SetPriorityHighCommand, 
+                                     RelativeSource={RelativeSource AncestorType=Window}}" 
+                                     CommandParameter="{Binding}"/>
+                        </MenuItem>
+                        <MenuItem Header="Delete" 
+                                 Command="{Binding DataContext.DeleteCardCommand, 
+                                 RelativeSource={RelativeSource AncestorType=Window}}" 
+                                 CommandParameter="{Binding}"/>
+                    </ContextMenu>
+                </Grid.ContextMenu>
+            </Grid>
+        </DataTemplate>
+    </Window.Resources>
+    
+    <!-- Main gradient background -->
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#1E1E2E" Offset="0"/>
+                <GradientStop Color="#302D41" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+        
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- Header -->
+        <StackPanel Grid.Row="0" Margin="20,15,20,5">
+            <TextBlock Text="ProductivityPal" FontSize="24" FontWeight="Bold" Foreground="White"/>
+            <TextBlock Text="Organize tasks. Stay productive." FontSize="14" Margin="0,5,0,0" Foreground="#CCC"/>
+        </StackPanel>
+        
+        <!-- Task Lists Container -->
+        <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <ItemsControl ItemsSource="{Binding TaskLists}" Margin="10">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="{x:Type models:TaskList}">
+                        <!-- List Column -->
+                        <Border Width="300" Margin="10,5" Background="#282838" CornerRadius="5">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                
+                                <!-- List Header -->
+                                <Grid Grid.Row="0" Margin="10">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <TextBlock Text="{Binding Title}" FontWeight="Bold" FontSize="16" Foreground="White"/>
+                                    <Button Grid.Column="1" Content="⋮" Background="Transparent" BorderThickness="0" Foreground="White"/>
+                                </Grid>
+                                
+                                <!-- List Cards -->
+                                <ListBox Grid.Row="1" 
+                                         ItemsSource="{Binding Cards}" 
+                                         Background="Transparent" 
+                                         BorderThickness="0"
+                                         Margin="5,0" 
+                                         MaxHeight="500"
+                                         dd:DragDrop.IsDragSource="True"
+                                         dd:DragDrop.IsDropTarget="True"
+                                         dd:DragDrop.DropHandler="{Binding DataContext, RelativeSource={RelativeSource AncestorType=Window}}">
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="Margin" Value="0,5"/>
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
+                                </ListBox>
+                                
+                                <!-- Add Card Button -->
+                                <Button Grid.Row="2" 
+                                        Content="+ Add a card" 
+                                        Margin="10" 
+                                        Padding="5" 
+                                        HorizontalAlignment="Left"
+                                        Background="Transparent"
+                                        Foreground="#CCC"
+                                        BorderThickness="0"
+                                        Command="{Binding DataContext.AddCardCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                        CommandParameter="{Binding}"/>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+    </Grid>
+</Window>

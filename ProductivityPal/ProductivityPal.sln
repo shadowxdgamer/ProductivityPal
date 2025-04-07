@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductivityPal", "ProductivityPal\ProductivityPal.csproj", "{3EC75752-992B-4F82-80AB-5113FE1E8508}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3EC75752-992B-4F82-80AB-5113FE1E8508}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3EC75752-992B-4F82-80AB-5113FE1E8508}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3EC75752-992B-4F82-80AB-5113FE1E8508}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3EC75752-992B-4F82-80AB-5113FE1E8508}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {19BAADF2-6297-4BFB-8A4E-AFF59619D505}
+	EndGlobalSection
+EndGlobal
