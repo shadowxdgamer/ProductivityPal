@@ -14,7 +14,7 @@ namespace ProductivityPal.Services
     public class AIService
     {
         private readonly HttpClient _client;
-        private const string _apiKey = "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"; // TODO: Store your OpenRouter API key securely
+        private const string _apiKey = ""; // TODO: Store your OpenRouter API key securely
         private const string _endpoint = "https://openrouter.ai/api/v1/chat/completions";
         private const string _siteUrl = "https://productivitypal.app"; // Replace with your actual site URL
         private const string _siteName = "ProductivityPal"; // Your app name
